@@ -184,8 +184,10 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Mat3.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Vec3.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +209,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dxmath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
