@@ -192,7 +192,7 @@ void Graphics::DrawTestTriangle()
 	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
 
 	// Set primitive topology to triangle list (groups of 3 vertcies)
-	pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// configure viewport
 	D3D11_VIEWPORT vp = {};
