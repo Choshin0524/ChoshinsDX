@@ -4,7 +4,7 @@
 
 App::App()
 	:
-	wnd(1500, 600, "WIWNWIWINDOW")
+	wnd(800, 600, "WIWNWIWINDOW")
 {}
 
 int App::Go()
@@ -23,10 +23,15 @@ int App::Go()
 void App::DoFrame()
 {
 	const float c = abs(sin(timer.Peek()));
-	wnd.Gfx().ClearBuffer(c, 1.0f, c);
+	wnd.Gfx().ClearBuffer(c, c, 1.0f);
+	wnd.Gfx().DrawTestTriangle(
+		-timer.Peek(),
+		0.0f,
+		0.0f
+	);
 	wnd.Gfx().DrawTestTriangle(
 		timer.Peek(),
-		(float)wnd.mouse.GetPosX() / 750.0f - 1.0f,
+		(float)wnd.mouse.GetPosX() / 400.0f - 1.0f,
 		-(float)wnd.mouse.GetPosY() / 300.0f + 1.0f
 	);
 	wnd.Gfx().EndFrame();
