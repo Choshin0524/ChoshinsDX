@@ -23,6 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "WindowsThrowMacros.h"
 #include <optional>
 #include <memory>
 
@@ -86,8 +87,3 @@ private:
 	HWND hWnd;
 	std::unique_ptr<Graphics> pGfx; // to defer the constraction
 };
-
-// error exception helper macro
-#define	CHWND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr)
-#define CHWND_NOGFX_EXCEPT() Window::NoGfxException(__LINE__, __FILE__)
-#define	CHWND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError())
