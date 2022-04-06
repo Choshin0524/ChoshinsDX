@@ -2,7 +2,6 @@
 #include <wrl.h>
 #include <sstream>
 #include <DirectXMath.h>
-#include "GraphicsThrowMacros.h"
 
 namespace wrl = Microsoft::WRL;
 
@@ -10,6 +9,10 @@ namespace dx = DirectX;
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"D3DCompiler.lib")
+
+// check and throw
+#define GFX_THROW_IF_FAILED(hrcall) if (FAILED(hr=(hrcall))) throw Graphics::Exception(__LINE__, __FILE__, (hr))
+#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr))
 
 Graphics::Graphics(HWND hWnd)
 {

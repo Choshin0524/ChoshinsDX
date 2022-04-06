@@ -3,13 +3,12 @@
 #include "ChiliException.h"
 #include <d3d11.h>
 #include <memory>
+#include <d3dcompiler.h>
 #include <wrl.h>
 #include <vector>
-#include <d3dcompiler.h>
 
 class Graphics
 {
-	friend class Bindable;
 public:
 	class Exception : public ChiliException
 	{
