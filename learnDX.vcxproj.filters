@@ -84,7 +84,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\Users\smzhg\Downloads\murder_crime_escene_corpse_icon_191321.ico">
+    <Image Include="murder_crime_escene_corpse_icon_191321.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
