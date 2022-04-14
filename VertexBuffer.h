@@ -23,7 +23,7 @@ public:
 		GFX_THROW_IF_FAILED(GetDevide(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer));
 	}
 	void Bind(Graphics& gfx) noexcept override;
-private:
+protected:
 	UINT stride;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
 };
