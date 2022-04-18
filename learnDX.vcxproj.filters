@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Bindable">
       <UniqueIdentifier>{c4b02e33-e096-4159-abb3-37a65b59cd92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawable">
+      <UniqueIdentifier>{194fab4e-eb58-4c9d-a88d-ef888061bcb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -81,6 +84,12 @@
     <ClCompile Include="TransformCbuf.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -108,12 +117,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mat3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsThrowMacros.h">
@@ -173,10 +176,5 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Dxmath.h">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

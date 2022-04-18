@@ -20,7 +20,7 @@ public:
 		bd.StructureByteStride = sizeof(V);
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = vertices.data();
-		GFX_THROW_IF_FAILED(GetDevide(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer));
+		GFX_THROW_IF_FAILED(GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer));
 	}
 	void Bind(Graphics& gfx) noexcept override;
 protected:

@@ -28,7 +28,7 @@ public:
 		cbd.StructureByteStride = 0u;
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &consts;
-		GFX_THROW_IF_FAILED(pDevice->CreateBuffer(&cbd, &csd, &pConstantBuffer));
+		GFX_THROW_IF_FAILED(GetDevice(gfx)->CreateBuffer(&cbd, &csd, &pConstantBuffer));
 	}
 	ConstantBuffer(Graphics& gfx)
 	{
@@ -40,7 +40,7 @@ public:
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
-		GFX_THROW_IF_FAILED(pDevice->CreateBuffer(&cbd, nullptr, &pConstantBuffer));
+		GFX_THROW_IF_FAILED(GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer));
 	}
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
@@ -55,7 +55,7 @@ public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressof());
+		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
 
@@ -68,6 +68,6 @@ public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressof());
+		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 	}
 };

@@ -8,9 +8,11 @@ public:
 	App();
 	// master frame and msg loop
 	int Go();
+	~App();
 private:
 	void DoFrame();
 private:
 	Window wnd;
 	ChiliTimer timer;
+	std::vector<std::unique_ptr<class Box>> boxes;
 };
