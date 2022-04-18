@@ -9,5 +9,4 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 protected:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
 };

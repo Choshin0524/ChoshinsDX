@@ -8,5 +8,5 @@ public:
 	ID3DBlob* GetBytecode() const noexcept;
 protected:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> pBytecodeBlob;
 };

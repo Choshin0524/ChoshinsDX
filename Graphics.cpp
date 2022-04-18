@@ -2,17 +2,14 @@
 #include <wrl.h>
 #include <sstream>
 #include <DirectXMath.h>
-
+#include "GraphicsThrowMacros.h"
 namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"D3DCompiler.lib")
-
-// check and throw
-#define GFX_THROW_IF_FAILED(hrcall) if (FAILED(hr=(hrcall))) throw Graphics::Exception(__LINE__, __FILE__, (hr))
-#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr))
+#pragma comment(lib,"runtimeobject.lib")
 
 Graphics::Graphics(HWND hWnd)
 {
@@ -23,60 +20,60 @@ Graphics::Graphics(HWND hWnd)
 	sd.BufferDesc.RefreshRate.Numerator = 0;
 	sd.BufferDesc.RefreshRate.Denominator = 0;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // will be specified if interlaced
-	// no anti-aliasing
+	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = 2; // using 2 back buffer (totally 3 buffers)
+	sd.BufferCount = 1;
 	sd.OutputWindow = hWnd;
 	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags = 0;
 
-	// for checking results of d3d functionss
+	UINT swapCreateFlags = 0u;
+#ifndef NDEBUG
+	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	// for checking results of d3d functions
 	HRESULT hr;
 
-	// create device and front/back buffers,and swap chain and rendering context
+	// create device and front/back buffers, and swap chain and rendering context
 	GFX_THROW_IF_FAILED(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		D3D11_CREATE_DEVICE_DEBUG,
+		swapCreateFlags,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
 		&sd,
-		&pSwap, // release and get address ( & is overloaded )
+		&pSwap,
 		&pDevice,
 		nullptr,
 		&pContext
 	));
+
 	// gain access to texture subresource in swap chain (back buffer)
 	wrl::ComPtr<ID3D11Resource> pBackBuffer;
 	GFX_THROW_IF_FAILED(pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
-	GFX_THROW_IF_FAILED(pDevice->CreateRenderTargetView(
-		pBackBuffer.Get(),
-		nullptr,
-		pTarget.GetAddressOf()
-	));
+	GFX_THROW_IF_FAILED(pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTarget));
 
-	// create depth stencil state
+	// create depth stensil state
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	// less Z value will be passed (which means closer to the screen)
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
 	GFX_THROW_IF_FAILED(pDevice->CreateDepthStencilState(&dsDesc, &pDSState));
-	
+
 	// bind depth state
 	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
 
-	// create depth stencil texture
+	// create depth stensil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 800u;
+	descDepth.Width = 1000u;
 	descDepth.Height = 600u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
@@ -87,7 +84,7 @@ Graphics::Graphics(HWND hWnd)
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	GFX_THROW_IF_FAILED(pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil));
 
-	// create view of depth stencil texture
+	// create view of depth stensil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -96,14 +93,17 @@ Graphics::Graphics(HWND hWnd)
 		pDepthStencil.Get(), &descDSV, &pDSV
 	));
 
+	// bind depth stensil view to OM
 	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
+
+	// configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 800.0f;
+	vp.Width = 1000.0f;
 	vp.Height = 600.0f;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;
-	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports(1u, &vp);
 }
 
