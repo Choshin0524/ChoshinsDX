@@ -140,7 +140,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(ProjectDir)%(Filename).cso</ObjectFileOutput>
