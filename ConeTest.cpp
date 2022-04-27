@@ -1,9 +1,10 @@
-#include "Box.h"
+#pragma once
+#include "ConeTest.h"
 #include "BindableBase.h"
 #include "GraphicsThrowMacros.h"
-#include "Cube.h"
+#include "Cone.h"
 
-Box::Box(Graphics& gfx,
+ConeTest::ConeTest(Graphics& gfx,
 	std::mt19937& rng,
 	std::uniform_real_distribution<float>& adist,
 	std::uniform_real_distribution<float>& ddist,
@@ -29,7 +30,7 @@ Box::Box(Graphics& gfx,
 		{
 			dx::XMFLOAT3 pos;
 		};
-		const auto model = Cube::Make<Vertex>();
+		const auto model = Cone::Make<Vertex>();
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, L"ColorIndexVS.cso");
@@ -83,7 +84,7 @@ Box::Box(Graphics& gfx,
 	dx::XMStoreFloat3x3
 	(
 		&mt,
-		dx::XMMatrixScaling(1.0f,1.0f,bdist(rng))
+		dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng))
 	);
 }
 
