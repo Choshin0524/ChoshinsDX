@@ -31,4 +31,8 @@ private:
 	float dchi;
 	// model transform
 	DirectX::XMFLOAT3X3 mt;
+	float RotateSpeed = 0.1f;
+	float Fchi, Fphi, Ftheta = 0.0f;
+	float xoff = 0.7f;
+	float yoff = 0.0f;
 };

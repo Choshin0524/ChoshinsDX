@@ -54,13 +54,13 @@ ConeTest::ConeTest(Graphics& gfx,
 		const ConstantBuffer2 cb2 =
 		{
 			{
-				{ 1.0f,0.0f,1.0f },
-				{ 1.0f,0.0f,0.0f },
-				{ 0.0f,1.0f,0.0f },
-				{ 0.0f,0.0f,1.0f },
-				{ 1.0f,1.0f,0.0f },
+				{ 0.5f,0.8f,1.0f },
+				{ 1.0f,0.0f,0.3f },
+				{ 0.0f,1.0f,0.1f },
+				{ 0.0f,0.23f,1.0f },
+				{ 1.0f,0.1f,0.0f },
 				{ 0.0f,1.0f,1.0f },
-				{ 0.0f,1.0f,1.0f },
+				{ 0.4f,1.0f,1.0f },
 				{ 0.0f,0.0f,0.0f },
 			}
 		};
@@ -80,29 +80,27 @@ ConeTest::ConeTest(Graphics& gfx,
 	}
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
 
-	//model deformation transform (per instance, not stored as bind)
+	//model deformation transf	orm (per instance, not stored as bind)
 	dx::XMStoreFloat3x3
 	(
 		&mt,
-		dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng))
+		dx::XMMatrixScaling(1.0f, 1.0f, 1.0f)
 	);
 }
 
-void Box::Update(float dt) noexcept
+void ConeTest::Update(float dt) noexcept
 {
-	roll += droll * dt;
-	pitch += dpitch * dt;
-	yaw += dyaw * dt;
-	theta += dtheta * dt;
-	phi += dphi * dt;
-	chi += dchi * dt;
+	roll += RotateSpeed * dt;
+	pitch += RotateSpeed * dt;
+	yaw += RotateSpeed * dt;
+	Ftheta += RotateSpeed * dt;
+	Fphi += RotateSpeed * dt;
+	Fchi += RotateSpeed * dt;
 }
 
-DirectX::XMMATRIX Box::GetTransformXM() const noexcept
+DirectX::XMMATRIX ConeTest::GetTransformXM() const noexcept
 {
 	return DirectX::XMLoadFloat3x3(&mt) *
-		DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-		DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
-		DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+		DirectX::XMMatrixRotationRollPitchYaw(-roll, 0, 0) *
+		DirectX::XMMatrixTranslation(-0.0f, 0.0f, 3.6f);
 }

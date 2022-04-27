@@ -1,6 +1,6 @@
 #include "App.h"
 #include "Box.h"
-
+#include "ConeTest.h"
 App::App()
 	:
 	wnd(1000, 600, "WIWNWIWINDOW")
@@ -14,7 +14,7 @@ App::App()
 		{}
 		std::unique_ptr<Drawable> operator()()
 		{
-			return std::make_unique<Box>(
+			return std::make_unique<ConeTest>(
 				gfx, rng, adist, ddist,
 				odist, rdist, bdist
 				);
@@ -34,7 +34,7 @@ App::App()
 	drawables.reserve(drawableN);
 	std::generate_n(std::back_inserter(drawables), drawableN, f);
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.15f, 40.0f));
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.3f, 40.0f));
 }
 
 int App::Go()

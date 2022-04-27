@@ -15,5 +15,5 @@ private:
 	Window wnd;
 	ChiliTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
-	static constexpr size_t drawableN = 30;
+	static constexpr size_t drawableN = 1;
 };
