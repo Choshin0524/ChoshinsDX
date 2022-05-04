@@ -30,7 +30,7 @@ SphereTest::SphereTest(Graphics& gfx,
 		{
 			dx::XMFLOAT3 pos;
 		};
-		const auto model = Sphere::Make<Vertex>();
+		auto model = Sphere::Make<Vertex>();
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, L"ColorIndexVS.cso");

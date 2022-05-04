@@ -30,7 +30,7 @@ PrismTest::PrismTest(Graphics& gfx,
 		{
 			dx::XMFLOAT3 pos;
 		};
-		const auto model = Prism::Make<Vertex>();
+		auto model = Prism::Make<Vertex>();
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, L"ColorIndexVS.cso");

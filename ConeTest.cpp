@@ -30,7 +30,7 @@ ConeTest::ConeTest(Graphics& gfx,
 		{
 			dx::XMFLOAT3 pos;
 		};
-		const auto model = Cone::Make<Vertex>();
+		auto model = Cone::Make<Vertex>();
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, L"ColorIndexVS.cso");

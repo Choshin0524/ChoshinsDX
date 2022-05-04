@@ -42,7 +42,7 @@ public:
 
 		// indices
 		std::vector<unsigned short> indices;
-		indices.reserve((divisions_x * divisions_y) * 6);
+		indices.reserve((divisions_x * divisions_y) * (divisions_x * divisions_y) * 6);
 		{
 			const auto vxy2i = [nVertices_x](size_t x, size_t y)
 			{
