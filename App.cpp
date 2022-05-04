@@ -1,11 +1,67 @@
 #include "App.h"
-#include <sstream>
-#include <iomanip>
-
+#include "Box.h"
+#include "ConeTest.h"
+#include "SphereTest.h"
+#include "PrismTest.h"
 App::App()
 	:
-	wnd(800, 600, "WIWNWIWINDOW")
-{}
+	wnd(1000, 600, "WIWNWIWINDOW")
+{
+	class Factory
+	{
+	public:
+		Factory(Graphics& gfx)
+			:
+			gfx(gfx)
+		{}
+		// () -> function call operator
+		std::unique_ptr<Drawable> operator()()
+		{
+			switch (typedist(rng))
+			{
+			case 0:
+				return std::make_unique<PrismTest>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+					);
+			case 1:
+				return std::make_unique<ConeTest>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+					);
+			case 2: 
+				return std::make_unique<SphereTest>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+					);
+			case 3:
+				return std::make_unique<Box>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+					);
+			default:
+				break;
+			}
+			
+		}
+	private:
+		Graphics& gfx;
+		std::mt19937 rng{ std::random_device{}()};
+		std::uniform_real_distribution<float> adist{ 0.0f, 3.1415f * 2.0f };
+		std::uniform_real_distribution<float> ddist{ 0.0f, 3.1415f * 2.0f };
+		std::uniform_real_distribution<float> odist{ 0.0f, 3.1415f * 0.3f };
+		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
+		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
+		std::uniform_int_distribution<int> typedist{ 0,3 };
+	};
+
+	Factory f(wnd.Gfx());
+	drawables.reserve(drawableN);
+	std::generate_n(std::back_inserter(drawables), drawableN, f);
+
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 40.0f));
+
+}
 
 int App::Go()
 {
@@ -20,19 +76,19 @@ int App::Go()
 	}
 }
 
+App::~App()
+{
+}
+
 void App::DoFrame()
 {
-	const float c = abs(sin(timer.Peek()));
-	wnd.Gfx().ClearBuffer(c, c, 1.0f);
-	wnd.Gfx().DrawTestTriangle(
-		-timer.Peek(),
-		0.0f,
-		0.0f
-	);
-	wnd.Gfx().DrawTestTriangle(
-		timer.Peek(),
-		(float)wnd.mouse.GetPosX() / 400.0f - 1.0f,
-		-(float)wnd.mouse.GetPosY() / 300.0f + 1.0f
-	);
+	auto dt = timer.Mark();
+	wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
+	for  (auto& b : drawables)
+	{
+		b->Update(dt);
+		b->Draw(wnd.Gfx());
+	}
 	wnd.Gfx().EndFrame();
 }
