@@ -1,8 +1,16 @@
+#pragma once
 #include "App.h"
 #include "Box.h"
 #include "ConeTest.h"
 #include "SphereTest.h"
 #include "PrismTest.h"
+#include "Sheet.h"
+#include "Surface.h"
+#include "GDIPlusManager.h"
+#include "ProjectMath.h"
+
+GDIPlusManager gdipm;
+
 App::App()
 	:
 	wnd(1000, 600, "WIWNWIWINDOW")
@@ -35,9 +43,9 @@ App::App()
 					odist, rdist, bdist
 					);
 			case 3:
-				return std::make_unique<Box>(
+				return std::make_unique<Sheet>(
 					gfx, rng, adist, ddist,
-					odist, rdist, bdist
+					odist, rdist
 					);
 			default:
 				break;
@@ -87,7 +95,7 @@ void App::DoFrame()
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
 	for  (auto& b : drawables)
 	{
-		b->Update(dt);
+		b->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		b->Draw(wnd.Gfx());
 	}
 	wnd.Gfx().EndFrame();
