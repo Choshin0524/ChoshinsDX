@@ -99,6 +99,9 @@
     <ClCompile Include="SphereTest.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="PrismTest.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -189,6 +192,12 @@
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="SphereTest.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Prism.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="PrismTest.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>

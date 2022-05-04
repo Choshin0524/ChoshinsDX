@@ -188,6 +188,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PrismTest.cpp" />
     <ClCompile Include="SphereTest.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
@@ -219,6 +220,8 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="Prism.h" />
+    <ClInclude Include="PrismTest.h" />
     <ClInclude Include="ProjectMath.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Sphere.h" />
