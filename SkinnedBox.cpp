@@ -1,16 +1,19 @@
 #pragma once
-#include "SphereTest.h"
+#include "SkinnedBox.h"
 #include "BindableBase.h"
 #include "GraphicsThrowMacros.h"
+#include "Cube.h"
+#include "Sampler.h"
+#include "Texture.h"
+#include "Surface.h"
 
 
-SphereTest::SphereTest(Graphics& gfx,
+SkinnedBox::SkinnedBox(Graphics& gfx,
 	std::mt19937& rng,
 	std::uniform_real_distribution<float>& adist,
 	std::uniform_real_distribution<float>& ddist,
 	std::uniform_real_distribution<float>& odist,
-	std::uniform_real_distribution<float>& rdist,
-	std::uniform_real_distribution<float>& bdist)
+	std::uniform_real_distribution<float>& rdist)
 	:
 	r(rdist(rng)),
 	droll(ddist(rng)),
@@ -29,46 +32,30 @@ SphereTest::SphereTest(Graphics& gfx,
 		struct Vertex
 		{
 			dx::XMFLOAT3 pos;
+			dx::XMFLOAT2 tex;
 		};
-		auto model = Sphere::Make<Vertex>();
+		auto model = Cube::MakeSkinned<Vertex>();
+
+		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(
+			"Images\\cube.png"
+		)));
+
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"ColorIndexVS.cso");
+		AddStaticBind(std::make_unique<Sampler>(gfx));
+
+		auto pvs = std::make_unique<VertexShader>(gfx, L"TextureVS.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"ColorIndexPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"TexturePS.cso"));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
-
-		struct ConstantBuffer2
-		{
-			struct
-			{
-				float r;
-				float g;
-				float b;
-				float a;
-			} face_colors[8];
-		};
-		const ConstantBuffer2 cb2 =
-		{
-			{
-				{ 1.0f,0.0f,1.0f },
-				{ 1.0f,0.0f,0.0f },
-				{ 0.0f,1.0f,0.0f },
-				{ 0.0f,0.0f,1.0f },
-				{ 1.0f,1.0f,0.0f },
-				{ 0.0f,1.0f,1.0f },
-				{ 0.0f,1.0f,1.0f },
-				{ 0.0f,0.0f,0.0f },
-			}
-		};
-		AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0},
 		};
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
@@ -80,15 +67,9 @@ SphereTest::SphereTest(Graphics& gfx,
 	}
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
 
-	//model deformation transform (per instance, not stored as bind)
-	dx::XMStoreFloat3x3
-	(
-		&mt,
-		dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng))
-	);
 }
 
-void SphereTest::Update(float dt) noexcept
+void SkinnedBox::Update(float dt) noexcept
 {
 	roll += droll * dt;
 	pitch += dpitch * dt;
@@ -98,9 +79,9 @@ void SphereTest::Update(float dt) noexcept
 	chi += dchi * dt;
 }
 
-DirectX::XMMATRIX SphereTest::GetTransformXM() const noexcept
+DirectX::XMMATRIX SkinnedBox::GetTransformXM() const noexcept
 {
-	return DirectX::XMLoadFloat3x3(&mt) *
+	return
 		DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
 		DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
 		DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
