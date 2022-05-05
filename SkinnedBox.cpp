@@ -1,14 +1,14 @@
 #pragma once
-#include "Sheet.h"
+#include "SkinnedBox.h"
 #include "BindableBase.h"
 #include "GraphicsThrowMacros.h"
-#include "Plane.h"
+#include "Cube.h"
 #include "Sampler.h"
 #include "Texture.h"
 #include "Surface.h"
 
 
-Sheet::Sheet(Graphics& gfx,
+SkinnedBox::SkinnedBox(Graphics& gfx,
 	std::mt19937& rng,
 	std::uniform_real_distribution<float>& adist,
 	std::uniform_real_distribution<float>& ddist,
@@ -32,22 +32,14 @@ Sheet::Sheet(Graphics& gfx,
 		struct Vertex
 		{
 			dx::XMFLOAT3 pos;
-			struct
-			{
-				float u;
-				float v;
-			} tex;
+			dx::XMFLOAT2 tex;
 		};
-		auto model = Plane::Make<Vertex>();
-		model.vertices[0].tex = { 0.0f,0.0f };
-		model.vertices[1].tex = { 3.0f,0.0f };
-		model.vertices[2].tex = { 0.0f,3.0f };
-		model.vertices[3].tex = { 3.0f,3.0f };
+		auto model = Cube::MakeSkinned<Vertex>();
 
 		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(
-			"Images\\Face.png"
+			"Images\\cube.png"
 		)));
-			
+
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		AddStaticBind(std::make_unique<Sampler>(gfx));
@@ -77,7 +69,7 @@ Sheet::Sheet(Graphics& gfx,
 
 }
 
-void Sheet::Update(float dt) noexcept
+void SkinnedBox::Update(float dt) noexcept
 {
 	roll += droll * dt;
 	pitch += dpitch * dt;
@@ -87,7 +79,7 @@ void Sheet::Update(float dt) noexcept
 	chi += dchi * dt;
 }
 
-DirectX::XMMATRIX Sheet::GetTransformXM() const noexcept
+DirectX::XMMATRIX SkinnedBox::GetTransformXM() const noexcept
 {
 	return
 		DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *

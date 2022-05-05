@@ -18,5 +18,5 @@ Sampler::Sampler(Graphics& gfx)
 
 void Sampler::Bind(Graphics& gfx) noexcept
 {
-	GetContext(gfx)->PSSetSamplers(0u, 1u, pSampler.GetAddressOf());
+	GetContext(gfx)->PSSetSamplers(0, 1, pSampler.GetAddressOf());
 }

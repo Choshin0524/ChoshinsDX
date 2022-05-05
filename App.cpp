@@ -5,6 +5,7 @@
 #include "SphereTest.h"
 #include "PrismTest.h"
 #include "Sheet.h"
+#include "SkinnedBox.h"
 #include "Surface.h"
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
@@ -47,6 +48,11 @@ App::App()
 					gfx, rng, adist, ddist,
 					odist, rdist
 					);
+			case 4:
+				return std::make_unique<SkinnedBox>(
+					gfx, rng, adist, ddist,
+					odist, rdist
+					);
 			default:
 				break;
 			}
@@ -60,7 +66,7 @@ App::App()
 		std::uniform_real_distribution<float> odist{ 0.0f, 3.1415f * 0.3f };
 		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
-		std::uniform_int_distribution<int> typedist{ 0,3 };
+		std::uniform_int_distribution<int> typedist{ 0,4 };
 	};
 
 	Factory f(wnd.Gfx());
