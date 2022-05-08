@@ -9,6 +9,7 @@
 #include "Surface.h"
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
+#include "imgui/imgui.h"
 
 GDIPlusManager gdipm;
 
@@ -73,8 +74,7 @@ App::App()
 	drawables.reserve(drawableN);
 	std::generate_n(std::back_inserter(drawables), drawableN, f);
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 40.0f));
-
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 80.0f));
 }
 
 int App::Go()
@@ -96,13 +96,29 @@ App::~App()
 
 void App::DoFrame()
 {
-	auto dt = timer.Mark();
-	wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+	auto dt = timer.Mark() * speed_factor;
+
+	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetCamera(cam.GetMatrix());
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
 	for  (auto& b : drawables)
 	{
-		b->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+		b->Update(wnd.kbd.KeyIsPressed(VK_SHIFT) ? 0.0f : dt);
 		b->Draw(wnd.Gfx());
 	}
+	static char buffer[1024];
+	
+	// imgui window to control simulaiton speed
+	if (ImGui::Begin("Simulation Speed")) //return false when minimized
+	{
+		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+		ImGui::Text("App costs %.3f / frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::InputText("Butts", buffer, sizeof(buffer));
+	}
+	ImGui::End();
+	// imgui window to control camera
+	cam.SpawnControlWindow();
+
+	// present
 	wnd.Gfx().EndFrame();
 }

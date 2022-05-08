@@ -3,6 +3,9 @@
 #include <sstream>
 #include <DirectXMath.h>
 #include "GraphicsThrowMacros.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
+
 namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
@@ -105,10 +108,20 @@ Graphics::Graphics(HWND hWnd)
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports(1u, &vp);
+
+	// init imgui d3d implement
+	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
 void Graphics::EndFrame()
 {
+	// imgui frame end
+	if (imguiEnabled)
+	{
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	}
+
 	HRESULT hr;
 	if (FAILED(hr = pSwap->Present(1u, 0u)))
 	{
@@ -123,8 +136,15 @@ void Graphics::EndFrame()
 	}
 }
 
-void Graphics::ClearBuffer(float red, float green, float blue) noexcept
+void Graphics::BeginFrame(float red, float green, float blue)
 {
+	if (imguiEnabled)
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
+
 	const float color[] = { red, green, blue, 1.0f };
 	// whenever clean the screen also clean Zbuffer
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
@@ -149,6 +169,31 @@ void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 {
 	return projection;
+}
+
+void Graphics::SetCamera(DirectX::FXMMATRIX cam) noexcept
+{
+	camera = cam;
+}
+
+DirectX::XMMATRIX Graphics::GetCamera() const noexcept
+{
+	return camera;
+}
+
+void Graphics::EnableImgui() noexcept
+{
+	imguiEnabled = true;
+}
+
+void Graphics::DisableImgui() noexcept
+{
+	imguiEnabled = false;
+}
+
+bool Graphics::IsImguiEnabled() const noexcept
+{
+	return imguiEnabled;
 }
 
 const char* Graphics::DeviceRemovedException::GetType() const noexcept

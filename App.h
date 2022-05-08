@@ -1,6 +1,8 @@
 #pragma once
 #include "Window.h"
 #include "ChiliTimer.h"
+#include "ImguiManager.h"
+#include "Camera.h"
 
 class App
 {
@@ -12,8 +14,11 @@ public:
 private:
 	void DoFrame();
 private:
+	float speed_factor = 1.0f;
+	ImguiManager imgui;
 	Window wnd;
+	Camera cam;
 	ChiliTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
-	static constexpr size_t drawableN = 30;
+	static constexpr size_t drawableN = 10;
 };
