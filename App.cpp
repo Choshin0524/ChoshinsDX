@@ -74,8 +74,7 @@ App::App()
 	drawables.reserve(drawableN);
 	std::generate_n(std::back_inserter(drawables), drawableN, f);
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 40.0f));
-
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 80.0f));
 }
 
 int App::Go()
@@ -100,6 +99,7 @@ void App::DoFrame()
 	auto dt = timer.Mark() * speed_factor;
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetCamera(cam.GetMatrix());
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
 	for  (auto& b : drawables)
 	{
@@ -116,6 +116,9 @@ void App::DoFrame()
 		ImGui::InputText("Butts", buffer, sizeof(buffer));
 	}
 	ImGui::End();
+	// imgui window to control camera
+	cam.SpawnControlWindow();
+
 	// present
 	wnd.Gfx().EndFrame();
 }
