@@ -153,6 +153,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		return true;
 	}
+	const auto imio = ImGui::GetIO();
+
 	switch (msg)
 	{
     // to only destory the window from destructor
@@ -167,6 +169,10 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	// keyboard messages
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+		if (imio.WantCaptureKeyboard)
+		{
+			break;
+		}
 		//prevent auto repeat check -> https://docs.microsoft.com/ja-jp/windows/win32/inputdev/wm-keydown
 		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) // 0x40000000 -> 0b1000....(0*30)
 		{
@@ -178,12 +184,20 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
+		if (imio.WantCaptureKeyboard)
+		{
+			break;
+		}
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
 
 	// mouse messages
 	case WM_MOUSEMOVE:
 	{
+		if (imio.WantCaptureMouse)
+		{
+			break;
+		}
 		const POINTS pt = MAKEPOINTS(lParam);
 		// in client region
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)

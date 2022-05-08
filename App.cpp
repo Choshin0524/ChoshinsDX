@@ -97,16 +97,7 @@ App::~App()
 
 void App::DoFrame()
 {
-	auto dt = timer.Mark();
-
-	if (wnd.kbd.KeyIsPressed(VK_SPACE))
-	{
-		wnd.Gfx().DisableImgui();
-	}
-	else
-	{
-		wnd.Gfx().EnableImgui();
-	}
+	auto dt = timer.Mark() * speed_factor;
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
@@ -115,14 +106,16 @@ void App::DoFrame()
 		b->Update(wnd.kbd.KeyIsPressed(VK_SHIFT) ? 0.0f : dt);
 		b->Draw(wnd.Gfx());
 	}
-
+	static char buffer[1024];
 	
-
-	if (show_demo_window)
+	// imgui window to control simulaiton speed
+	if (ImGui::Begin("Simulation Speed")) //return false when minimized
 	{
-		ImGui::ShowDemoWindow(&show_demo_window);
+		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+		ImGui::Text("App costs %.3f / frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::InputText("Butts", buffer, sizeof(buffer));
 	}
-
+	ImGui::End();
 	// present
 	wnd.Gfx().EndFrame();
 }

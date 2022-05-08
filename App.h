@@ -13,10 +13,10 @@ public:
 private:
 	void DoFrame();
 private:
-	bool show_demo_window = true;
+	float speed_factor = 1.0f;
 	ImguiManager imgui;
 	Window wnd;
 	ChiliTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
-	static constexpr size_t drawableN = 30;
+	static constexpr size_t drawableN = 300;
 };
