@@ -364,4 +364,4 @@ FodyWeavers.xsd
 /imgui.ini
 
 # compiled shader file
-/*.cso
+*.cso
