@@ -1,12 +1,6 @@
 #pragma once
 #include "App.h"
 #include "Box.h"
-#include "ConeTest.h"
-#include "SphereTest.h"
-#include "PrismTest.h"
-#include "Sheet.h"
-#include "SkinnedBox.h"
-#include "Surface.h"
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
@@ -15,7 +9,8 @@ GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd(1000, 600, "WIWNWIWINDOW")
+	wnd(1000, 600, "WIWNWIWINDOW"),
+	light(wnd.Gfx())
 {
 	class Factory
 	{
@@ -27,37 +22,10 @@ App::App()
 		// () -> function call operator
 		std::unique_ptr<Drawable> operator()()
 		{
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<PrismTest>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
-			case 1:
-				return std::make_unique<ConeTest>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
-			case 2: 
-				return std::make_unique<SphereTest>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
-			case 3:
-				return std::make_unique<Sheet>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 4:
-				return std::make_unique<SkinnedBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			default:
-				break;
-			}
-			
+			return std::make_unique<Box>(
+				gfx, rng, adist, ddist,
+				odist, rdist, bdist
+				);
 		}
 	private:
 		Graphics& gfx;
@@ -67,7 +35,6 @@ App::App()
 		std::uniform_real_distribution<float> odist{ 0.0f, 3.1415f * 0.3f };
 		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
-		std::uniform_int_distribution<int> typedist{ 0,4 };
 	};
 
 	Factory f(wnd.Gfx());
@@ -100,25 +67,26 @@ void App::DoFrame()
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 	wnd.Gfx().SetCamera(cam.GetMatrix());
+	light.Bind(wnd.Gfx());
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
+	
 	for  (auto& b : drawables)
 	{
 		b->Update(wnd.kbd.KeyIsPressed(VK_SHIFT) ? 0.0f : dt);
 		b->Draw(wnd.Gfx());
 	}
-	static char buffer[1024];
+	light.Draw(wnd.Gfx());
 	
 	// imgui window to control simulaiton speed
 	if (ImGui::Begin("Simulation Speed")) //return false when minimized
 	{
 		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("App costs %.3f / frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::InputText("Butts", buffer, sizeof(buffer));
 	}
 	ImGui::End();
 	// imgui window to control camera
 	cam.SpawnControlWindow();
-
+	light.SpawnControlWindow();
 	// present
 	wnd.Gfx().EndFrame();
 }

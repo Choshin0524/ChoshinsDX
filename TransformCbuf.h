@@ -9,6 +9,12 @@ public:
 	TransformCbuf(Graphics& gfx, const Drawable& parent);
 	void Bind(Graphics& gfx) noexcept override;
 private:
-	static std::unique_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> pVcbuf;
+	struct Transforms
+	{
+		// WHY REVERSED? supposed to be model -> modelVIewProj
+		DirectX::XMMATRIX modelViewProj;
+		DirectX::XMMATRIX model;
+	};
+	static std::unique_ptr<VertexConstantBuffer<Transforms>> pVcbuf;
 	const Drawable& parent;
 };

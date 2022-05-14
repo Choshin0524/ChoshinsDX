@@ -21,7 +21,7 @@ float4 main(float3 worldPos : Position, float3 n : Normal) : SV_TARGET
     const float3 dirToL = vToL / distToL;
     // diffuse attenuation
     const float att = attConst + attLin * distToL + attQuad * (distToL * distToL);
-    // diffuse intensity
+    // diffuse intensity (Book DirectX12 p.324)
     const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
     
     // final color
