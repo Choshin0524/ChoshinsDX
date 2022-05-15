@@ -7,7 +7,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
 	namespace dx = DirectX;
 
-	if(!IsStaticInitialized)
+	if(!IsStaticInitialized())
 	{
 		struct Vertex
 		{

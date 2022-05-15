@@ -86,7 +86,7 @@ public:
 	template<class V>
 	static IndexedTriangleList<V> MakeIndependent()
 	{
-		constexpr float side = 1.0f / 2.0f;
+		constexpr float side = 1.5f / 2.0f;
 
 		std::vector<V> vertices(24);
 		vertices[0].pos = { -side,-side,-side };// 0 near side
@@ -116,9 +116,9 @@ public:
 
 		return{
 			std::move(vertices),{
-				0,2, 1,    2,3,1,
-				4,5, 7,    4,7,6,
-				8,10, 9,  10,11,9,
+				0,2,1,    2,3,1,
+				4,5,7,    4,7,6,
+				8,10,9,  10,11,9,
 				12,13,15, 12,15,14,
 				16,17,18, 18,17,19,
 				20,23,21, 20,22,23
