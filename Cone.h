@@ -54,6 +54,18 @@ public:
 		}
 		return { std::move(vertices), std::move(indices) };
 	}
+
+	template<class V>
+	static IndexedTriangleList<V> MakeTesselatedIndependentFaces(int longDiv)
+	{
+		namespace dx = DirectX;
+		assert(longDiv >= 3);
+		const auto base = dx::XMVectorSet(1.0f, 0.0f, -1.0f, 0.0f);
+		const float longitudeAngle = 2.0f * PI / longDiv;
+
+		return { std::move(vertices), std::move(indices) };
+	}
+
 	template<class V>
 	static IndexedTriangleList<V> Make()
 	{

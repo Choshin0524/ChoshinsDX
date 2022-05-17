@@ -1,6 +1,7 @@
 #pragma once
 #include "App.h"
 #include "Box.h"
+#include "Cylinder.h"
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
@@ -22,10 +23,24 @@ App::App()
 		// () -> function call operator
 		std::unique_ptr<Drawable> operator()()
 		{
-			return std::make_unique<Box>(
-				gfx, rng, adist, ddist,
-				odist, rdist, bdist
-				);
+			const DirectX::XMFLOAT3 mat = { cdist(rng), cdist(rng), cdist(rng) };
+			switch (sdist(rng))
+			{
+			case 0:
+				return std::make_unique<Box>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist, mat
+					);
+			case 1:
+				return std::make_unique<Cylinder>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist, tdist
+					);
+			default:
+				assert(false && "impossible drawable option");
+				return {};
+			}
+			
 		}
 	private:
 		Graphics& gfx;
@@ -35,6 +50,11 @@ App::App()
 		std::uniform_real_distribution<float> odist{ 0.0f, 3.1415f * 0.3f };
 		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
+		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
+		std::uniform_int_distribution<int> sdist{ 0, 1 };
+		std::uniform_int_distribution<int> tdist{ 20, 60 };
+
+
 	};
 
 	Factory f(wnd.Gfx());
@@ -67,7 +87,7 @@ void App::DoFrame()
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 	wnd.Gfx().SetCamera(cam.GetMatrix());
-	light.Bind(wnd.Gfx());
+	light.Bind(wnd.Gfx(), wnd.Gfx().GetCamera());
 	wnd.Gfx().SetRenderTarget(); // flip mode removes binds every frame
 	
 	for  (auto& b : drawables)
