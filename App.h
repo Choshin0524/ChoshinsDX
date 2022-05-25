@@ -21,6 +21,7 @@ private:
 	Camera cam;
 	PointLight light;
 	ChiliTimer timer;
+	std::vector<class Box*> boxes;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
 	static constexpr size_t drawableN = 100;
 };

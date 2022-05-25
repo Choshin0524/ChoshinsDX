@@ -12,7 +12,7 @@ GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd(1000, 600, "WIWNWIWINDOW"),
+	wnd(1500, 1200, "WIWNWIWINDOW"),
 	light(wnd.Gfx())
 {
 	class Factory
@@ -73,7 +73,16 @@ App::App()
 	drawables.reserve(drawableN);
 	std::generate_n(std::back_inserter(drawables), drawableN, f);
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 5.0f, 0.5f, 80.0f));
+	// init box pointers for editing instance parameters
+	for (auto& pd : drawables)
+	{
+		if (auto pb = dynamic_cast<Box*>(pd.get()))
+		{
+			boxes.push_back(pb);
+		}
+	}
+
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 12.0f / 15.0f, 0.5f, 80.0f));
 }
 
 int App::Go()
@@ -119,6 +128,7 @@ void App::DoFrame()
 	// imgui window to control camera
 	cam.SpawnControlWindow();
 	light.SpawnControlWindow();
+	boxes.front()->SpawnControlWindow(10, wnd.Gfx());
 	// present
 	wnd.Gfx().EndFrame();
 }
