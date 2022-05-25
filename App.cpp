@@ -1,7 +1,9 @@
 #pragma once
 #include "App.h"
 #include "Box.h"
+#include "SkinnedBox.h"
 #include "Cylinder.h"
+#include "Pyramid.h"
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
@@ -36,6 +38,16 @@ App::App()
 					gfx, rng, adist, ddist,
 					odist, rdist, bdist, tdist
 					);
+			case 2:
+				return std::make_unique<Pyramid>(
+					gfx, rng, adist, ddist,
+					odist, rdist, tdist
+					);
+			case 3:
+				return std::make_unique<SkinnedBox>(
+					gfx, rng, adist, ddist,
+					odist, rdist
+					);
 			default:
 				assert(false && "impossible drawable option");
 				return {};
@@ -51,8 +63,8 @@ App::App()
 		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
 		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
-		std::uniform_int_distribution<int> sdist{ 0, 1 };
-		std::uniform_int_distribution<int> tdist{ 20, 60 };
+		std::uniform_int_distribution<int> sdist{ 0, 3 };
+		std::uniform_int_distribution<int> tdist{ 4, 15 };
 
 
 	};

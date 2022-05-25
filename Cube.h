@@ -86,7 +86,7 @@ public:
 	template<class V>
 	static IndexedTriangleList<V> MakeIndependent()
 	{
-		constexpr float side = 1.5f / 2.0f;
+		constexpr float side = 2.5f / 2.0f;
 
 		std::vector<V> vertices(24);
 		vertices[0].pos = { -side,-side,-side };// 0 near side
@@ -124,5 +124,19 @@ public:
 				20,23,21, 20,22,23
 			}
 		};
+	}
+
+	template<class V>
+	static IndexedTriangleList<V> MakeIndependentTextured()
+	{
+		auto itl = MakeIndependent<V>();
+		for (unsigned short i = 1; i <= 6; i++)
+		{
+			itl.vertices[i * 4 - 4].tc = { 0.0f, 0.0f };
+			itl.vertices[i * 4 - 3].tc = { 1.0f, 0.0f };
+			itl.vertices[i * 4 - 2].tc = { 0.0f, 1.0f };
+			itl.vertices[i * 4 - 1].tc = { 1.0f, 1.0f };
+		}
+		return itl;
 	}
 };
