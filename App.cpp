@@ -4,6 +4,8 @@
 #include "SkinnedBox.h"
 #include "Cylinder.h"
 #include "Pyramid.h"
+#include <memory>
+#include <algorithm>
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
@@ -118,17 +120,71 @@ void App::DoFrame()
 	}
 	light.Draw(wnd.Gfx());
 	
+	// imgui window to control camera
+	SpawnSimulationWindow();
+	cam.SpawnControlWindow();
+	light.SpawnControlWindow();
+	SpawnBoxWindowManagerWindow();
+	SpawnBoxWindows();
+	// present
+	wnd.Gfx().EndFrame();
+}
+
+void App::SpawnSimulationWindow() noexcept
+{
 	// imgui window to control simulaiton speed
 	if (ImGui::Begin("Simulation Speed")) //return false when minimized
 	{
 		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("App costs %.3f / frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SHIFT) ? "PAUSED" : "RUNNING (hold shift to pause)");
 	}
 	ImGui::End();
-	// imgui window to control camera
-	cam.SpawnControlWindow();
-	light.SpawnControlWindow();
-	boxes.front()->SpawnControlWindow(10, wnd.Gfx());
-	// present
-	wnd.Gfx().EndFrame();
+}
+
+void App::SpawnBoxWindowManagerWindow() noexcept
+{
+	if (ImGui::Begin("Boxes"))
+	{
+		using namespace std::string_literals;
+		const auto preview = comboBoxIndex != 0 ? std::to_string(comboBoxIndex) : "Choose a box..."s;
+		if (ImGui::BeginCombo("Box Number", preview.c_str()))
+		{
+			for (int i = 0; i < boxes.size(); i++)
+			{
+				const bool selected = comboBoxIndex == i + 1;
+				if (ImGui::Selectable(std::to_string(i + 1).c_str(), selected))
+				{
+					comboBoxIndex = i + 1;
+				}
+				if (selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+		if (ImGui::Button("Spawn Control Window") && comboBoxIndex)
+		{
+			boxControlIds.insert(comboBoxIndex);
+			comboBoxIndex = 0;
+		}
+	}
+	ImGui::End();
+}
+
+void App::SpawnBoxWindows() noexcept
+{
+	// imgui box attribute control windows
+	for (auto i = boxControlIds.begin(); i != boxControlIds.end();)
+	{
+		if (!boxes[*i - 1]->SpawnControlWindow(*i, wnd.Gfx()))
+		{
+			i = boxControlIds.erase(i);
+		}
+		else
+		{
+			i++;
+		}
+	}
 }

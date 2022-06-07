@@ -4,6 +4,7 @@
 #include "ImguiManager.h"
 #include "Camera.h"
 #include "PointLight.h"
+#include <set>
 
 class App
 {
@@ -14,6 +15,10 @@ public:
 	~App();
 private:
 	void DoFrame();
+	void SpawnSimulationWindow() noexcept;
+	void SpawnBoxWindowManagerWindow() noexcept;
+	void SpawnBoxWindows() noexcept;
+
 private:
 	float speed_factor = 1.0f;
 	ImguiManager imgui;
@@ -24,4 +29,6 @@ private:
 	std::vector<class Box*> boxes;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
 	static constexpr size_t drawableN = 100;
+	std::set<int> boxControlIds;
+	int comboBoxIndex = 0;
 };
