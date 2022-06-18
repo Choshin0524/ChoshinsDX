@@ -9,6 +9,7 @@
 #include "GDIPlusManager.h"
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
+#include "AssTest.h"
 
 GDIPlusManager gdipm;
 
@@ -50,6 +51,11 @@ App::App()
 					gfx, rng, adist, ddist,
 					odist, rdist
 					);
+			case 4:
+				return std::make_unique<AssTest>(
+					gfx, rng, adist, ddist,
+					odist, rdist, mat, 1.5f
+					);
 			default:
 				assert(false && "impossible drawable option");
 				return {};
@@ -65,7 +71,7 @@ App::App()
 		std::uniform_real_distribution<float> rdist{ 10.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist{ 1.0f, 1.1f };
 		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
-		std::uniform_int_distribution<int> sdist{ 0, 3 };
+		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_int_distribution<int> tdist{ 4, 15 };
 
 
