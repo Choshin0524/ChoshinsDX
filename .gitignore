@@ -367,3 +367,4 @@ FodyWeavers.xsd
 
 # compiled shader file
 *.cso
+/Models

@@ -10,14 +10,26 @@
 #include "ProjectMath.h"
 #include "imgui/imgui.h"
 #include "AssTest.h"
+#include "VertexLayout.h"
 
 GDIPlusManager gdipm;
+
+void f()
+{
+	VertexLayout vl;
+	vl.Append<VertexLayout::Position3D>()
+		.Append<VertexLayout::Normal>();
+	VertexBuffer vb(std::move(vl));
+	vb.EmplaceBack(DirectX::XMFLOAT3{ 1.0f, 1.0f, 5.0f }, DirectX::XMFLOAT3{ 2.0f, 1.0f, 4.0f });
+	auto pos = vb[0].Attr<VertexLayout::Position3D>();
+}
 
 App::App()
 	:
 	wnd(1500, 1200, "WIWNWIWINDOW"),
 	light(wnd.Gfx())
 {
+	f();
 	class Factory
 	{
 	public:
@@ -54,7 +66,7 @@ App::App()
 			case 4:
 				return std::make_unique<AssTest>(
 					gfx, rng, adist, ddist,
-					odist, rdist, mat, 1.5f
+					odist, rdist, mat, 0.3f
 					);
 			default:
 				assert(false && "impossible drawable option");
@@ -73,8 +85,6 @@ App::App()
 		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
 		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_int_distribution<int> tdist{ 4, 15 };
-
-
 	};
 
 	Factory f(wnd.Gfx());
